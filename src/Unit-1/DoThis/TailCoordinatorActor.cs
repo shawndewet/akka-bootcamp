@@ -45,5 +45,20 @@ namespace WinTail
 
             }
         }
+
+        protected override SupervisorStrategy SupervisorStrategy()
+        {
+            return new OneForOneStrategy(
+                10, //maxRetries
+                TimeSpan.FromSeconds(30), //withinTimerange
+                x => //localOnlyDecider
+                {
+                    if (x is ArithmeticException) return Directive.Resume;
+
+                    else if (x is NotSupportedException) return Directive.Stop;
+
+                    else return Directive.Restart;
+                });
+        }
     }
 }
