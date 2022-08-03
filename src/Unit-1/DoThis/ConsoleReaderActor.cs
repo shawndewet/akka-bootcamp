@@ -57,7 +57,7 @@ namespace WinTail
         /// </summary>
         private void GetAndValidateInput()
         {
-            Console.WriteLine($"Thread {System.Threading.Thread.CurrentThread.ManagedThreadId} says Type Something:");
+            Console.WriteLine($"Thread {System.Threading.Thread.CurrentThread.ManagedThreadId} {Self.Path} {GetHashCode()} says Type Something:");
             var message = Console.ReadLine();
             
             if (!string.IsNullOrEmpty(message) && String.Equals(message, ExitCommand, StringComparison.OrdinalIgnoreCase))

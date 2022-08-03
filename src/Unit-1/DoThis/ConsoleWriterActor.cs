@@ -11,6 +11,7 @@ namespace WinTail
     {
         protected override void OnReceive(object message)
         {
+            Console.WriteLine($"Thread {System.Threading.Thread.CurrentThread.ManagedThreadId} {Self.Path} {GetHashCode()} is about to write...");
             if (message is Messages.InputError)
             {
                 var msg = message as Messages.InputError;
