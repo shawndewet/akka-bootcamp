@@ -61,6 +61,8 @@ namespace ChartApp.Actors
 
         protected override void OnReceive(object message)
         {
+            
+            
             if (message is GatherMetrics)
             {
                 var metric = new Metric(_seriesName, _counter.NextValue());
