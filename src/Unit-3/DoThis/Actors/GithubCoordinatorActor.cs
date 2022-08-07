@@ -139,7 +139,9 @@ namespace GithubActors.Actors
 
                     //all repos minus forks of the current one
                     var sortedSimilarRepos = _similarRepos.Values
-                        .Where(x => x.Repo.Name != _currentRepo.Repo).OrderByDescending(x => x.SharedStarrers).ToList();
+                        .Where(x => x.Repo.Name != _currentRepo.Repo)
+                        .OrderByDescending(x => x.SharedStarrers)
+                        .ToList();
                     foreach (var subscriber in _subscribers)
                     {
                         subscriber.Tell(sortedSimilarRepos);
