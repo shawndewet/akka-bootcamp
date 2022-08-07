@@ -86,7 +86,9 @@ namespace GithubActors.Actors
                 _coordinator.Tell(job);
                 //BecomeAsking();
                 _canAcceptJobSender = Sender;
-                pendingJobReplies = 3; //the number of routes
+                //pendingJobReplies = 3; //the number of routes
+                pendingJobReplies = _coordinator.Ask<Routees>(new GetRoutees()).Result.Members.Count();
+                System.Diagnostics.Debug.Assert(pendingJobReplies == 3);
                 Become(Asking);
             });
         }
@@ -130,17 +132,21 @@ namespace GithubActors.Actors
         {
             //_coordinator = Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name);
 
-            // create three coordinatorActors
-            var c1 = Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name + "1");
-            var c2 = Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name + "2");
-            var c3 = Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name + "3");
+            //// create three coordinatorActors
+            //var c1 = Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name + "1");
+            //var c2 = Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name + "2");
+            //var c3 = Context.ActorOf(Props.Create(() => new GithubCoordinatorActor()), ActorPaths.GithubCoordinatorActor.Name + "3");
 
-            //create a broadcast router to ask all of them if they're available for work
-            _coordinator = Context.ActorOf(Props.Empty.WithRouter(
-                new BroadcastGroup(ActorPaths.GithubCoordinatorActor.Path + "1",
-                ActorPaths.GithubCoordinatorActor.Path + "2",
-                ActorPaths.GithubCoordinatorActor.Path + "3"
-                )));
+            ////create a broadcast router to ask all of them if they're available for work
+            //_coordinator = Context.ActorOf(Props.Empty.WithRouter(
+            //    new BroadcastGroup(ActorPaths.GithubCoordinatorActor.Path + "1",
+            //    ActorPaths.GithubCoordinatorActor.Path + "2",
+            //    ActorPaths.GithubCoordinatorActor.Path + "3"
+            //    )));
+
+            _coordinator = Context.ActorOf(Props.Create(() => new GithubCoordinatorActor())
+                .WithRouter(FromConfig.Instance), 
+                ActorPaths.GithubCoordinatorActor.Name);
 
             base.PreStart();
         }
